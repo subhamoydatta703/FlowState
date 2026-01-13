@@ -1,0 +1,147 @@
+:root {
+  /* Zinc / Industrial Palette */
+  --background: #09090b;
+  /* Zinc 950 */
+  --surface: #121215;
+  /* Slightly lighter background */
+  --surface-hover: #18181b;
+  /* Zinc 900 */
+
+  /* Primary Action: White text on Black, or Black on White for buttons */
+  --primary: #fafafa;
+  /* Zinc 50 */
+  --primary-foreground: #09090b;
+  --primary-hover: #e4e4e7;
+  /* Zinc 200 */
+
+  /* Accents are minimal/monochrome */
+  --secondary: #27272a;
+  /* Zinc 800 */
+  --secondary-foreground: #fafafa;
+
+  --text: #fafafa;
+  /* Zinc 50 */
+  --text-muted: #d4d4d8;
+  /* Zinc 300 */
+
+  /* Thick White Borders as requested */
+  --border: #ffffff;
+  --border-hover: #e4e4e7;
+
+  --success: #10b981;
+  /* Keep semantic green */
+  --danger: #ef4444;
+  /* Keep semantic red */
+
+  --radius: 8px;
+  /* Sharper corners for "industrial" look */
+  --shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+
+  --font-main: 'Inter', -apple-system, sans-serif;
+  /* Inter is the standard for this look */
+
+  --glass-bg: rgba(9, 9, 11, 0.8);
+}
+
+[data-theme='light'] {
+  --background: #fafafa;
+  /* Zinc 50 - Cleaner, Brighter */
+  --surface: #ffffff;
+  /* White - Classic card bg */
+  --surface-hover: #f4f4f5;
+  /* Zinc 100 */
+
+  --primary: #18181b;
+  /* Zinc 900 - Soft Black */
+  --primary-foreground: #fafafa;
+  --primary-hover: #27272a;
+  /* Zinc 800 */
+
+  --secondary: #f4f4f5;
+  /* Zinc 100 */
+  --secondary-foreground: #18181b;
+
+  --text: #18181b;
+  /* Zinc 900 - Soft Black for better reading */
+  --text-muted: #71717a;
+  /* Zinc 500 */
+
+  --border: #e4e4e7;
+  /* Zinc 200 - Subtle definition */
+  --border-hover: #d4d4d8;
+  /* Zinc 300 */
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+  font-family: var(--font-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+  /* Firefox default is lower */
+}
+
+/* Utilities */
+.card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+.glass-panel {
+  background: var(--glass-bg);
+  /* Darker, less blur color */
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: var(--font-main);
+  transition: all 0.2s;
+  font-size: 0.875rem;
+}
+
+/* Remove gradient text */
+.title-gradient {
+  color: var(--text);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface-hover);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
