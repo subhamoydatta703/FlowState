@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const calculateProductivity = async (taskDescription, duration, tags) => {
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
         const prompt = `
       Analyze the following work task description, duration, and tags. Assign a productivity score from 0 to 100 based on complexity, effort, and impact.
