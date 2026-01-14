@@ -1,5 +1,7 @@
 # FlowState - Productivity Tracker
 
+🌐 **Website:** [https://flow-state-app.vercel.app](https://flow-state-app.vercel.app)
+
 ## Overview
 FlowState is a gamified productivity tracker designed to help you stay focused and manage your time effectively. It combines task logging with AI-powered productivity scoring, a built-in scheduler, and detailed analytics to give you deep insights into your work habits.
 
