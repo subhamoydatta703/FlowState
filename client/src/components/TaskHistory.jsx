@@ -51,7 +51,7 @@ const TaskHistory = ({ logs }) => {
                             ))}
                         </div>
 
-                        {log.aiFeedback && (
+                        {log.aiFeedback && !log.aiFeedback.includes("AI Offline") && (
                             <p className="history-feedback">"{log.aiFeedback}"</p>
                         )}
                     </div>

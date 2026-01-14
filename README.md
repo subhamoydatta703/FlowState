@@ -67,5 +67,28 @@ npm run dev
 - **Analytics:** Visualize your productivity trends over time.
 - **Dark/Light Mode:** Beautifully crafted themes for any environment.
 
+## Vercel Deployment
+
+### Frontend Deployment
+1. Go to [Vercel](https://vercel.com) and import the `client` folder
+2. Set environment variables in Vercel dashboard:
+   - `VITE_CLERK_PUBLISHABLE_KEY` - Your Clerk publishable key
+   - `VITE_API_URL` - Your backend URL (e.g., `https://flowstate-api.vercel.app/api`)
+3. Deploy!
+
+### Backend Deployment
+1. Go to [Vercel](https://vercel.com) and import the `server` folder
+2. Set environment variables in Vercel dashboard:
+   - `MONGODB_URI` - MongoDB Atlas connection string
+   - `GEMINI_API_KEY` - Google Gemini API key
+   - `CLERK_PUBLISHABLE_KEY` - Clerk publishable key
+   - `CLERK_SECRET_KEY` - Clerk secret key
+   - `EMAIL_USER` - Gmail address for notifications
+   - `EMAIL_PASS` - Gmail app password
+   - `FRONTEND_URL` - Your frontend URL for CORS
+3. Deploy!
+
+> **Note:** After deploying both, update the `VITE_API_URL` in frontend and `FRONTEND_URL` in backend with the actual deployment URLs.
+
 ---
 **Author:** Subhamoy Datta
