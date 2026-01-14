@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUser } from '@clerk/clerk-react';
-import { Bell, Trash, Plus } from 'lucide-react';
+import { Bell, Trash, Plus, Edit2, X } from 'lucide-react';
 import { format } from 'date-fns';
 
 const Scheduler = () => {
@@ -9,6 +9,7 @@ const Scheduler = () => {
     const [reminders, setReminders] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [newTime, setNewTime] = useState("");
+    const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
         if (!user) return;
@@ -27,17 +28,40 @@ const Scheduler = () => {
     const handleAdd = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/reminders`, {
-                clerkId: user.id,
-                message: newMessage,
-                scheduledTime: newTime
-            });
+            if (editingId) {
+                await axios.put(`${import.meta.env.VITE_API_URL}/reminders/${editingId}`, {
+                    message: newMessage,
+                    scheduledTime: new Date(newTime).toISOString()
+                });
+                setEditingId(null);
+            } else {
+                await axios.post(`${import.meta.env.VITE_API_URL}/reminders`, {
+                    clerkId: user.id,
+                    message: newMessage,
+                    scheduledTime: new Date(newTime).toISOString()
+                });
+            }
             setNewMessage("");
             setNewTime("");
             fetchReminders();
         } catch (err) {
             console.error(err);
         }
+    };
+
+    const startEdit = (reminder) => {
+        setEditingId(reminder._id);
+        setNewMessage(reminder.message);
+        // Convert UTC to local datetime string for input
+        const date = new Date(reminder.scheduledTime);
+        const localIso = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+        setNewTime(localIso);
+    };
+
+    const cancelEdit = () => {
+        setEditingId(null);
+        setNewMessage("");
+        setNewTime("");
     };
 
     const handleDelete = async (id) => {
@@ -75,9 +99,16 @@ const Scheduler = () => {
                             required
                         />
                     </div>
-                    <button type="submit" className="btn add-btn">
-                        <Plus size={24} />
-                    </button>
+                    <div className="button-group">
+                        {editingId && (
+                            <button type="button" onClick={cancelEdit} className="btn cancel-btn">
+                                <X size={24} />
+                            </button>
+                        )}
+                        <button type="submit" className="btn add-btn">
+                            {editingId ? <Edit2 size={24} /> : <Plus size={24} />}
+                        </button>
+                    </div>
                 </div>
             </form>
 
@@ -89,9 +120,14 @@ const Scheduler = () => {
                             <p className="reminder-time">{format(new Date(rem.scheduledTime), 'MMM dd, h:mm a')}</p>
                             {rem.status === 'sent' && <span className="status-sent">Sent</span>}
                         </div>
-                        <button onClick={() => handleDelete(rem._id)} className="delete-btn">
-                            <Trash size={16} />
-                        </button>
+                        <div className="actions">
+                            <button onClick={() => startEdit(rem)} className="action-btn edit-btn">
+                                <Edit2 size={16} />
+                            </button>
+                            <button onClick={() => handleDelete(rem._id)} className="action-btn delete-btn">
+                                <Trash size={16} />
+                            </button>
+                        </div>
                     </div>
                 ))}
                 {reminders.length === 0 && <p className="empty-text">No upcoming reminders</p>}
@@ -155,9 +191,11 @@ const Scheduler = () => {
                 .date-wrapper {
                     flex: 1;
                 }
-                .add-btn {
-                    background-color: var(--primary);
-                    color: var(--primary-foreground);
+                .button-group {
+                    display: flex;
+                    gap: 0.5rem;
+                }
+                .btn {
                     padding: 0 1rem;
                     border-radius: var(--radius);
                     display: flex;
@@ -165,6 +203,20 @@ const Scheduler = () => {
                     justify-content: center;
                     transition: all 0.2s;
                     border: 1px solid transparent;
+                    cursor: pointer;
+                }
+                .add-btn {
+                    background-color: var(--primary);
+                    color: var(--primary-foreground);
+                }
+                .cancel-btn {
+                    background-color: transparent;
+                    border: 1px solid var(--border);
+                    color: var(--text-muted);
+                }
+                .cancel-btn:hover {
+                    background-color: var(--secondary);
+                    color: var(--text);
                 }
                 .add-btn:hover {
                     background-color: var(--primary-hover);
@@ -208,12 +260,22 @@ const Scheduler = () => {
                     border-radius: 4px;
                     font-weight: 500;
                 }
-                .delete-btn {
+                .actions {
+                    display: flex;
+                    gap: 0.25rem;
+                }
+                .action-btn {
                     color: var(--text-muted);
                     background: transparent;
                     padding: 0.4rem;
                     border-radius: 6px;
                     transition: all 0.2s;
+                    border: none;
+                    cursor: pointer;
+                }
+                .edit-btn:hover {
+                    background-color: var(--primary);
+                    color: var(--primary-foreground);
                 }
                 .delete-btn:hover {
                     background-color: var(--secondary);

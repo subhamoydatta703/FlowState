@@ -83,7 +83,7 @@ const WorkLogger = ({ onSuccess }) => {
                             type="number"
                             value={duration}
                             onChange={(e) => setDuration(e.target.value)}
-                            placeholder="Min"
+                            placeholder="Time (in minutes)"
                             className="logger-input-mini"
                         />
                         <input
@@ -178,7 +178,7 @@ const WorkLogger = ({ onSuccess }) => {
                     gap: 0.75rem;
                 }
                 .logger-input-mini {
-                    width: 80px;
+                    width: 150px;
                     background-color: transparent;
                     border: 1px solid var(--border);
                     border-radius: var(--radius);

@@ -40,6 +40,25 @@ router.post('/', async (req, res) => {
     }
 });
 
+// @route   PUT /api/reminders/:id
+router.put('/:id', async (req, res) => {
+    try {
+        const { message, scheduledTime } = req.body;
+        let reminder = await Reminder.findById(req.params.id);
+
+        if (!reminder) return res.status(404).json({ msg: 'Reminder not found' });
+
+        reminder.message = message;
+        reminder.scheduledTime = new Date(scheduledTime);
+
+        await reminder.save();
+        res.json(reminder);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 // @route   DELETE /api/reminders/:id
 router.delete('/:id', async (req, res) => {
     try {
