@@ -137,11 +137,16 @@ const Scheduler = () => {
                     outline: none;
                     border-color: var(--text);
                 }
-                /* Custom Calendar Icon Color */
+                /* Custom Calendar Icon Color - Dark theme (default) */
                 ::-webkit-calendar-picker-indicator {
                     filter: invert(1);
-                    opacity: 0.5;
+                    opacity: 0.7;
                     cursor: pointer;
+                }
+                /* Light theme */
+                :root[data-theme="light"] ::-webkit-calendar-picker-indicator {
+                    filter: invert(0);
+                    opacity: 0.7;
                 }
                 .form-row {
                     display: flex;
