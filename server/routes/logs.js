@@ -88,6 +88,55 @@ router.put('/:id/complete', async (req, res) => {
     }
 });
 
+// @route   POST /api/logs/batch-delete
+// @desc    Delete multiple logs
+router.post('/batch-delete', async (req, res) => {
+    try {
+        const { logIds } = req.body;
+
+        if (!Array.isArray(logIds) || logIds.length === 0) {
+            return res.status(400).json({ msg: 'No logs provided' });
+        }
+
+        // Find logs to be deleted to calculate points deduction
+        const logsToDelete = await Log.find({ _id: { $in: logIds } });
+
+        // Group points by user to batch update user points
+        const userPointsDeduction = {};
+
+        logsToDelete.forEach(log => {
+            if (log.status === 'completed') {
+                if (!userPointsDeduction[log.userId]) {
+                    userPointsDeduction[log.userId] = 0;
+                }
+                userPointsDeduction[log.userId] += log.points;
+            }
+        });
+
+        // Update users
+        // Note: Ideally we would use a transaction here, but for simplicity we'll just loop update
+        // or assume single user usage mostly.
+        // Since we have the logs, we can just grab the unique User IDs.
+        const userIds = Object.keys(userPointsDeduction);
+
+        for (const userId of userIds) {
+            const user = await User.findById(userId);
+            if (user) {
+                user.totalPoints = Math.max(0, user.totalPoints - userPointsDeduction[userId]);
+                await user.save();
+            }
+        }
+
+        // Delete logs
+        await Log.deleteMany({ _id: { $in: logIds } });
+
+        res.json({ msg: 'Logs removed', count: logIds.length });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 // @route   DELETE /api/logs/:id
 // @desc    Delete a log
 router.delete('/:id', async (req, res) => {

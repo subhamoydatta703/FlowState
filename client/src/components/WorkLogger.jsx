@@ -162,10 +162,12 @@ const WorkLogger = ({ onSuccess }) => {
                     padding: 1rem;
                     color: var(--text);
                     font-size: 1rem;
+                    transition: border-color 0.2s, background 0.2s;
                 }
                 .logger-input:focus {
                     outline: none;
                     border-color: var(--text);
+                    background-color: var(--surface-hover);
                 }
                 .form-footer {
                     display: flex;
@@ -184,6 +186,7 @@ const WorkLogger = ({ onSuccess }) => {
                     border-radius: var(--radius);
                     padding: 0.75rem;
                     color: var(--text);
+                    transition: border-color 0.2s;
                 }
                 .logger-input-tags {
                     flex: 1;
@@ -192,6 +195,7 @@ const WorkLogger = ({ onSuccess }) => {
                     border-radius: var(--radius);
                     padding: 0.75rem;
                     color: var(--text);
+                    transition: border-color 0.2s;
                 }
                 .logger-input-mini:focus, .logger-input-tags:focus {
                      outline: none;
@@ -209,6 +213,7 @@ const WorkLogger = ({ onSuccess }) => {
                     transition: opacity 0.2s;
                     border: none;
                     cursor: pointer;
+                    flex-shrink: 0;
                 }
                 .logger-submit:hover {
                     opacity: 0.9;
@@ -264,6 +269,7 @@ const WorkLogger = ({ onSuccess }) => {
                     color: var(--text-muted);
                     transition: all 0.2s;
                     border: 1px solid transparent;
+                    cursor: pointer;
                 }
                 .action-btn:hover {
                     border-color: var(--border);
@@ -284,6 +290,34 @@ const WorkLogger = ({ onSuccess }) => {
                 @keyframes spin {
                     from { transform: rotate(0deg); }
                     to { transform: rotate(360deg); }
+                }
+
+                @media (max-width: 640px) {
+                    .form-footer {
+                        flex-direction: column;
+                        align-items: stretch;
+                        gap: 1rem;
+                    }
+                    .input-group {
+                        flex-direction: column;
+                        gap: 1rem;
+                    }
+                    .logger-input-mini, .logger-input-tags {
+                        width: 100%;
+                    }
+                    .logger-submit {
+                        width: 100%;
+                        height: 48px;
+                    }
+                    .task-item {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 1rem;
+                    }
+                    .task-actions {
+                        width: 100%;
+                        justify-content: flex-end;
+                    }
                 }
             `}</style>
         </div>

@@ -68,6 +68,8 @@ const Navbar = ({ points }) => {
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
+                    backdrop-filter: blur(12px);
+                    transition: padding 0.3s ease;
                 }
                 .nav-brand {
                     display: flex;
@@ -80,7 +82,7 @@ const Navbar = ({ points }) => {
                     line-height: 1.2;
                 }
                 .brand-icon {
-                    color: var(--text); /* White icon */
+                    color: var(--text);
                     display: flex;
                 }
                 .nav-brand h1 {
@@ -118,7 +120,7 @@ const Navbar = ({ points }) => {
                 }
                 .progress-fill {
                     height: 100%;
-                    background: var(--text); /* White progress bar */
+                    background: var(--text);
                     border-radius: 999px;
                     transition: width 0.5s ease-out;
                 }
@@ -131,6 +133,7 @@ const Navbar = ({ points }) => {
                     font-weight: 600;
                     color: var(--text); 
                     border: 1px solid var(--border);
+                    white-space: nowrap;
                 }
                 .clerk-avatar {
                     width: 32px;
@@ -154,7 +157,18 @@ const Navbar = ({ points }) => {
                     color: var(--text);
                 }
                 @media (max-width: 768px) {
+                    .navbar {
+                        padding: 0.75rem 1rem;
+                    }
                     .level-info { display: none; }
+                    .nav-actions { gap: 0.75rem; }
+                    .greeting { display: none; }
+                }
+
+                @media (max-width: 480px) {
+                    .nav-brand h1 { font-size: 0.9rem; }
+                    .points-badge { display: none; } /* Hide points on very small screens to save space */
+                    .nav-actions { gap: 0.5rem; }
                 }
             `}</style>
         </nav>

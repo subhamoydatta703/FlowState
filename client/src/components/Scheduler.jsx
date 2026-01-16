@@ -150,7 +150,7 @@ const Scheduler = () => {
                     color: var(--text);
                 }
                 .icon-secondary {
-                    color: var(--text); /* Simple white icon */
+                    color: var(--text);
                 }
                 .scheduler-form {
                     display: flex;
@@ -173,13 +173,11 @@ const Scheduler = () => {
                     outline: none;
                     border-color: var(--text);
                 }
-                /* Custom Calendar Icon Color - Dark theme (default) */
                 ::-webkit-calendar-picker-indicator {
                     filter: invert(1);
                     opacity: 0.7;
                     cursor: pointer;
                 }
-                /* Light theme */
                 :root[data-theme="light"] ::-webkit-calendar-picker-indicator {
                     filter: invert(0);
                     opacity: 0.7;
@@ -237,7 +235,6 @@ const Scheduler = () => {
                     justify-content: space-between;
                     align-items: center;
                 }
-                /* Remove left accent line */
                 
                 .reminder-msg {
                     font-weight: 500;
@@ -287,6 +284,20 @@ const Scheduler = () => {
                     font-size: 0.8rem;
                     color: var(--text-muted);
                     font-style: italic;
+                }
+
+                @media (max-width: 640px) {
+                    .form-row {
+                        flex-direction: column;
+                        gap: 1rem;
+                    }
+                    .button-group {
+                        width: 100%;
+                    }
+                    .btn {
+                        flex: 1;
+                        padding: 0.75rem;
+                    }
                 }
             `}</style>
         </div>

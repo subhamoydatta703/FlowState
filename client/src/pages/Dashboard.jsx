@@ -65,7 +65,7 @@ const Dashboard = () => {
                     </section>
 
                     <section>
-                        <TaskHistory logs={stats.logs} />
+                        <TaskHistory logs={stats.logs} onRefresh={triggerRefresh} />
                     </section>
                 </div>
             </main>
@@ -76,7 +76,7 @@ const Dashboard = () => {
                     background-color: var(--background);
                 }
                 .dashboard-grid {
-                    max-width: 1000px; /* Tighter width for focus */
+                    max-width: 1000px;
                     margin: 0 auto;
                     padding: 2rem 1.5rem;
                     display: grid;
@@ -109,9 +109,42 @@ const Dashboard = () => {
                     border-radius: var(--radius);
                     padding: 1.5rem 1rem 0 0 ;
                 }
+                
+                /* Tablet / Moderate Screens */
                 @media (max-width: 992px) {
                     .dashboard-grid {
                         grid-template-columns: 1fr;
+                        gap: 2rem;
+                        padding: 2rem; 
+                    }
+                    .chart-container {
+                        padding-right: 0; /* Removing right padding for chart to use full width */
+                    }
+                }
+
+                /* Mobile Landscape / Large Mobile */
+                @media (max-width: 768px) {
+                    .dashboard-grid {
+                        padding: 1.5rem 1rem;
+                        gap: 1.5rem;
+                    }
+                    .main-content, .sidebar {
+                        gap: 1.5rem;
+                    }
+                    .section-title {
+                        font-size: 0.95rem;
+                        margin-bottom: 0.75rem;
+                    }
+                }
+
+                /* Small Mobile */
+                @media (max-width: 480px) {
+                    .dashboard-grid {
+                        padding: 1rem 0.75rem;
+                        gap: 1.25rem;
+                    }
+                    .card {
+                        padding: 1rem;
                     }
                 }
             `}</style>
