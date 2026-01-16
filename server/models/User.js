@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
     },
     dailyGoal: {
         type: Number,
-        default: 300
+        default: 500
     },
     lastInsight: {
         feedback: String,

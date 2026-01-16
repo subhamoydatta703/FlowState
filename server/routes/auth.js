@@ -44,10 +44,10 @@ router.post('/sync', async (req, res) => {
             user.dailyXP = 0;
         }
 
-        // FORCE UPDATE GOAL (Migration to 300)
-        // If it's the old default (500) or missing, set to 300
-        if (!user.dailyGoal || user.dailyGoal === 500) {
-            user.dailyGoal = 300;
+        // FORCE UPDATE GOAL (Migration to 500)
+        // If it was the old default (300) or missing, set to 500
+        if (!user.dailyGoal || user.dailyGoal === 300) {
+            user.dailyGoal = 500;
         }
 
         await user.save();

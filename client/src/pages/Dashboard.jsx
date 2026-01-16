@@ -42,7 +42,7 @@ const Dashboard = () => {
                     logs: logsRes.data,
                     streak: userRes.data.streak || 0,
                     dailyXP: userRes.data.dailyXP || 0,
-                    dailyGoal: userRes.data.dailyGoal || 300
+                    dailyGoal: userRes.data.dailyGoal || 500
                 });
             } catch (err) {
                 console.error(err);
