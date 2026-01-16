@@ -57,22 +57,22 @@ const ProductivityChart = ({ logs }) => {
                 />
                 <YAxis
                     yAxisId="left"
-                    stroke={axisColor}
+                    stroke={barColor} // Match Points Bar Color
                     fontSize={11}
                     tickLine={false}
                     axisLine={false}
-                    tick={{ fill: tickColor }}
-                    label={{ value: 'Points', angle: -90, position: 'insideLeft', fill: tickColor, fontSize: 10 }}
+                    tick={{ fill: barColor }}
+                    label={{ value: 'Points', angle: -90, position: 'insideLeft', fill: barColor, fontSize: 10 }}
                 />
                 <YAxis
                     yAxisId="right"
                     orientation="right"
-                    stroke={axisColor}
+                    stroke={areaColor} // Match Hours Area Color
                     fontSize={11}
                     tickLine={false}
                     axisLine={false}
-                    tick={{ fill: tickColor }}
-                    label={{ value: 'Hours', angle: 90, position: 'insideRight', fill: tickColor, fontSize: 10 }}
+                    tick={{ fill: areaColor }}
+                    label={{ value: 'Hours', angle: 90, position: 'insideRight', fill: areaColor, fontSize: 10 }}
                 />
                 <Tooltip
                     cursor={{ fill: cursorFill }}
