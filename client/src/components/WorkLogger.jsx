@@ -24,7 +24,11 @@ const WorkLogger = ({ onSuccess }) => {
             setPendingTasks(res.data);
         } catch (e) {
             console.error(e);
-            toast.error("Failed to load tasks");
+            if (e.response && e.response.status === 404) {
+                setPendingTasks([]); // It's just empty
+            } else {
+                toast.error("Failed to load tasks");
+            }
         }
     };
 

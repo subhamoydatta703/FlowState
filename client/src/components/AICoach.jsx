@@ -26,8 +26,13 @@ const AICoach = () => {
             toast.success("Coach is ready!");
         } catch (err) {
             console.error("Coach Error:", err);
-            setInsight("Couldn't reach the coach right now. Try again later.");
-            toast.error("Coach unavailable");
+            // If it's a 404/500 on first load, maybe just fail silently or show friendly text
+            if (err.response && err.response.status === 404) {
+                setInsight(null); // No insight yet
+            } else {
+                setInsight("Couldn't reach the coach right now. Try again later.");
+                toast.error("Coach unavailable");
+            }
         } finally {
             setLoading(false);
         }

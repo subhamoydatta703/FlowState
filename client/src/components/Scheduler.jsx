@@ -24,7 +24,11 @@ const Scheduler = () => {
             setReminders(res.data);
         } catch (err) {
             console.error(err);
-            toast.error("Failed to load reminders");
+            if (err.response && err.response.status === 404) {
+                setReminders([]); // No reminders yet
+            } else {
+                toast.error("Failed to load reminders");
+            }
         }
     };
 
