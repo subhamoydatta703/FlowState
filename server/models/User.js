@@ -21,6 +21,26 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    streak: {
+        type: Number,
+        default: 0
+    },
+    lastLogDate: {
+        type: Date
+    },
+    dailyXP: {
+        type: Number,
+        default: 0
+    },
+    dailyGoal: {
+        type: Number,
+        default: 300
+    },
+    lastInsight: {
+        feedback: String,
+        rating: Number,
+        generatedAt: Date
     }
 });
 

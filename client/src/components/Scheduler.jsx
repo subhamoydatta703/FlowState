@@ -4,6 +4,8 @@ import { useUser } from '@clerk/clerk-react';
 import { Bell, Trash, Plus, Edit2, X } from 'lucide-react';
 import { format } from 'date-fns';
 
+import toast from 'react-hot-toast';
+
 const Scheduler = () => {
     const { user } = useUser();
     const [reminders, setReminders] = useState([]);
@@ -22,6 +24,7 @@ const Scheduler = () => {
             setReminders(res.data);
         } catch (err) {
             console.error(err);
+            toast.error("Failed to load reminders");
         }
     };
 
@@ -34,18 +37,21 @@ const Scheduler = () => {
                     scheduledTime: new Date(newTime).toISOString()
                 });
                 setEditingId(null);
+                toast.success("Reminder updated");
             } else {
                 await axios.post(`${import.meta.env.VITE_API_URL}/reminders`, {
                     clerkId: user.id,
                     message: newMessage,
                     scheduledTime: new Date(newTime).toISOString()
                 });
+                toast.success("Reminder set!");
             }
             setNewMessage("");
             setNewTime("");
             fetchReminders();
         } catch (err) {
             console.error(err);
+            toast.error("Failed to save reminder");
         }
     };
 
@@ -68,8 +74,10 @@ const Scheduler = () => {
         try {
             await axios.delete(`${import.meta.env.VITE_API_URL}/reminders/${id}`);
             fetchReminders();
+            toast.success("Reminder deleted");
         } catch (err) {
             console.error(err);
+            toast.error("Failed to delete reminder");
         }
     };
 

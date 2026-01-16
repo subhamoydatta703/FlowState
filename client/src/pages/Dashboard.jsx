@@ -4,19 +4,31 @@ import WorkLogger from '../components/WorkLogger';
 import ProductivityChart from '../components/ProductivityChart';
 import Scheduler from '../components/Scheduler';
 import TaskHistory from '../components/TaskHistory';
+import AICoach from '../components/AICoach';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
 
 const Dashboard = () => {
     const { user } = useUser();
-    const [stats, setStats] = useState({ points: 0, logs: [] });
+    const [stats, setStats] = useState({
+        points: 0,
+        logs: [],
+        streak: 0,
+        dailyXP: 0,
+        dailyGoal: 300
+    });
     const [refresh, setRefresh] = useState(0);
+
+    const [loading, setLoading] = useState(true);
 
     const triggerRefresh = () => setRefresh(r => r + 1);
 
     useEffect(() => {
         if (!user) return;
         const fetchData = async () => {
+            // Keep loading true only on initial load to avoid flash on refresh
+            if (stats.logs.length === 0) setLoading(true);
+
             try {
                 const logsRes = await axios.get(`${import.meta.env.VITE_API_URL}/logs/${user.id}`);
                 const userRes = await axios.post(`${import.meta.env.VITE_API_URL}/auth/sync`, {
@@ -27,18 +39,70 @@ const Dashboard = () => {
 
                 setStats({
                     points: userRes.data.totalPoints,
-                    logs: logsRes.data
+                    logs: logsRes.data,
+                    streak: userRes.data.streak || 0,
+                    dailyXP: userRes.data.dailyXP || 0,
+                    dailyGoal: userRes.data.dailyGoal || 300
                 });
             } catch (err) {
                 console.error(err);
+            } finally {
+                setLoading(false);
             }
         };
         fetchData();
     }, [user, refresh]);
 
+    if (loading) {
+        return (
+            <div className="dashboard-container">
+                {/* Skeleton Navbar */}
+                <div style={{ height: '70px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1.5rem' }}>
+                    <div className="skeleton" style={{ width: '150px', height: '24px' }}></div>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        <div className="skeleton" style={{ width: '40px', height: '40px', borderRadius: '50%' }}></div>
+                        <div className="skeleton" style={{ width: '80px', height: '32px' }}></div>
+                    </div>
+                </div>
+
+                <main className="dashboard-grid">
+                    <div className="main-content">
+                        <div className="skeleton" style={{ height: '300px', width: '100%' }}></div>
+                        <div className="skeleton" style={{ height: '300px', width: '100%' }}></div>
+                    </div>
+                    <div className="sidebar">
+                        <div className="skeleton" style={{ height: '200px', width: '100%' }}></div>
+                        <div className="skeleton" style={{ height: '400px', width: '100%' }}></div>
+                    </div>
+                </main>
+
+                {/* Re-use main styles for layout consistency during load */}
+                <style>{`
+                    .dashboard-container { min-height: 100vh; background-color: var(--background); }
+                    .dashboard-grid {
+                        max-width: 1000px;
+                        margin: 0 auto;
+                        padding: 2rem 1.5rem;
+                        display: grid;
+                        grid-template-columns: 2fr 1.2fr;
+                        gap: 2.5rem;
+                    }
+                    .main-content { display: flex; flex-direction: column; gap: 2.5rem; }
+                    .sidebar { display: flex; flex-direction: column; gap: 2rem; }
+                    @media (max-width: 992px) { .dashboard-grid { grid-template-columns: 1fr; } }
+                `}</style>
+            </div>
+        )
+    }
+
     return (
         <div className="dashboard-container">
-            <Navbar points={stats.points} />
+            <Navbar
+                points={stats.points}
+                streak={stats.streak}
+                dailyXP={stats.dailyXP}
+                dailyGoal={stats.dailyGoal}
+            />
 
             <main className="dashboard-grid">
 
@@ -59,6 +123,10 @@ const Dashboard = () => {
 
                 {/* Right Col: Scheduler & Stats & History */}
                 <div className="sidebar">
+                    <section>
+                        <AICoach />
+                    </section>
+
                     <section>
                         <h2 className="section-title">Upcoming Reminders</h2>
                         <Scheduler />

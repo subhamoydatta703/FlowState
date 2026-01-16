@@ -2,7 +2,64 @@ const express = require('express');
 const router = express.Router();
 const Log = require('../models/Log');
 const User = require('../models/User');
-const { calculateProductivity } = require('../services/aiService');
+const { calculateProductivity, generateWeeklyInsight } = require('../services/aiService');
+
+// ... (existing code)
+
+// @route   POST /api/logs/insights/generate
+// @desc    Generate AI weekly insight
+router.post('/insights/generate', async (req, res) => {
+    try {
+        const { clerkId } = req.body;
+        const user = await User.findOne({ clerkId });
+        if (!user) return res.status(404).json({ msg: 'User not found' });
+
+        // CACHE CHECK: If insight is less than 24 hours old, return it
+        if (user.lastInsight && user.lastInsight.generatedAt) {
+            const oneDay = 24 * 60 * 60 * 1000;
+            const isFresh = (new Date() - new Date(user.lastInsight.generatedAt)) < oneDay;
+            const hasOfflineTag = user.lastInsight.feedback && user.lastInsight.feedback.includes("(Offline Mode)");
+
+            if (isFresh && !hasOfflineTag) {
+                console.log("Serving cached insight for:", user.username);
+                return res.json({
+                    insight: {
+                        feedback: user.lastInsight.feedback,
+                        rating: user.lastInsight.rating
+                    },
+                    cached: true
+                });
+            }
+        }
+
+        // Get logs for last 7 days
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        const logs = await Log.find({
+            userId: user._id,
+            status: 'completed',
+            createdAt: { $gte: sevenDaysAgo }
+        });
+
+        const insight = await generateWeeklyInsight(logs, user.username || "Creator");
+
+        // Cache the result
+        user.lastInsight = {
+            feedback: insight.feedback,
+            rating: insight.rating,
+            generatedAt: new Date()
+        };
+        await user.save();
+
+        res.json({ insight, cached: false });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+module.exports = router;
 
 // @route   GET /api/logs/:clerkId
 // @desc    Get all logs for a user matching status optional
@@ -77,8 +134,39 @@ router.put('/:id/complete', async (req, res) => {
         await log.save();
 
         // Award points to user
+        // Award points to user
         const user = await User.findById(log.userId);
         user.totalPoints += log.points;
+
+        // Gamification Logic
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        const lastLogStr = user.lastLogDate ? user.lastLogDate.toISOString().split('T')[0] : null;
+
+        if (lastLogStr === todayStr) {
+            // Same day: Add to daily XP
+            user.dailyXP += log.points;
+        } else {
+            // New day
+            user.dailyXP = log.points;
+
+            // Check for streak
+            if (lastLogStr) {
+                const yesterday = new Date(now);
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+                if (lastLogStr === yesterdayStr) {
+                    user.streak += 1;
+                } else {
+                    user.streak = 1; // Broken streak
+                }
+            } else {
+                user.streak = 1; // First ever log
+            }
+        }
+
+        user.lastLogDate = now;
         await user.save();
 
         res.json({ log, userPoints: user.totalPoints });

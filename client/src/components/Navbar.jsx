@@ -1,13 +1,38 @@
 import React from 'react';
 import { UserButton } from "@clerk/clerk-react";
-import { Zap, Sun, Moon } from 'lucide-react';
+import { Zap, Sun, Moon, Flame, Target } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const Navbar = ({ points }) => {
+const Navbar = ({ points, streak, dailyXP, dailyGoal }) => {
     const { theme, toggleTheme } = useTheme();
-    // Level calculation: 100 points per level
-    const level = Math.floor(points / 100) + 1;
-    const progress = points % 100;
+
+    // PROGRESSIVE LEVELING SYSTEM
+    // Formula: XP = 1000 * (Level * Level)
+    // Level 1: 0-999
+    // Level 2: 1000-3999 (Requires 1000 total)
+    // Level 3: 4000-8999 (Requires 4000 total)
+
+    // Reverse Formula: Level = Floor(Sqrt(XP / 1000)) + 1
+    // We adjust base to 1000 for easier starting
+
+    // Let's use Base 1000. 
+    // Lvl 1: 0 XP
+    // Lvl 2: 1000 XP
+    // Lvl 3: 4000 XP
+    // Lvl 4: 9000 XP
+
+    const currentLevel = Math.floor(Math.sqrt(points / 1000)) + 1;
+
+    const xpForCurrentLevel = 1000 * Math.pow(currentLevel - 1, 2);
+    const xpForNextLevel = 1000 * Math.pow(currentLevel, 2);
+
+    const xpInCurrentLevel = points - xpForCurrentLevel;
+    const xpNeededForNextLevel = xpForNextLevel - xpForCurrentLevel;
+
+    const progress = Math.min((xpInCurrentLevel / xpNeededForNextLevel) * 100, 100);
+
+    // Calculate daily progress percentage
+    const dailyProgress = dailyGoal ? Math.min((dailyXP / dailyGoal) * 100, 100) : 0;
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -19,7 +44,9 @@ const Navbar = ({ points }) => {
 
     return (
         <nav className="navbar glass-panel">
+            {/* ... brand ... */}
             <div className="nav-brand">
+                {/* ... existing brand code ... */}
                 <div className="brand-icon">
                     <Zap size={24} fill="currentColor" />
                 </div>
@@ -30,13 +57,50 @@ const Navbar = ({ points }) => {
             </div>
 
             <div className="nav-actions">
-                <div className="level-info">
-                    <span className="level-label">Level {level}</span>
-                    <div className="progress-bar">
-                        <div
-                            className="progress-fill"
-                            style={{ width: `${progress}%` }}
-                        />
+                {/* Daily Goal Ring (Mini) */}
+                <div className="daily-goal" title={`Daily Goal: ${dailyXP}/${dailyGoal} XP`}>
+                    <div className="ring-container">
+                        <svg width="32" height="32" viewBox="0 0 32 32">
+                            <circle cx="16" cy="16" r="12" fill="none" stroke="var(--border)" strokeWidth="3" />
+                            <circle
+                                cx="16" cy="16" r="12"
+                                fill="none"
+                                stroke={
+                                    dailyProgress >= 100 ? "#ef4444" : // Red Hot (Completed)
+                                        dailyProgress >= 66 ? "#ea580c" :  // Deep Orange
+                                            dailyProgress >= 33 ? "#f97316" :  // Standard Orange
+                                                "#fdba74"                          // Warm Yellow-Orange
+                                }
+                                strokeWidth="3"
+                                strokeDasharray="75.4"
+                                strokeDashoffset={75.4 - (dailyProgress / 100) * 75.4}
+                                transform="rotate(-90 16 16)"
+                                style={{
+                                    transition: 'all 0.5s ease',
+                                    filter: `drop-shadow(0 0 ${Math.max(2, dailyProgress / 8)}px ${dailyProgress >= 100 ? "#ef4444" :
+                                            dailyProgress >= 33 ? "#f97316" :
+                                                "rgba(253, 186, 116, 0.4)"
+                                        })`
+                                }}
+                            />
+                        </svg>
+                        <div className="ring-icon">
+                            <Target size={10} />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Streak Counter */}
+                <div className="streak-badge" title="Current Day Streak">
+                    <Flame size={16} className={streak > 0 ? "flame-active" : "flame-inactive"} fill={streak > 0 ? "currentColor" : "none"} />
+                    <span>{streak}</span>
+                </div>
+
+                {/* Level Info */}
+                <div className="level-container" title={`${xpInCurrentLevel}/${xpNeededForNextLevel} XP to Level ${currentLevel + 1}`}>
+                    <span className="level-label">Lvl {currentLevel}</span>
+                    <div className="xp-bar">
+                        <div className="xp-fill" style={{ width: `${progress}%` }}></div>
                     </div>
                 </div>
 
@@ -60,6 +124,7 @@ const Navbar = ({ points }) => {
             </div>
 
             <style>{`
+                /* ... existing styles ... */
                 .navbar {
                     position: sticky;
                     top: 0;
@@ -68,8 +133,10 @@ const Navbar = ({ points }) => {
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
+                    background: rgba(255, 255, 255, 0.05); /* Glass fallback */
                     backdrop-filter: blur(12px);
                     transition: padding 0.3s ease;
+                    border-bottom: 1px solid var(--border);
                 }
                 .nav-brand {
                     display: flex;
@@ -92,7 +159,7 @@ const Navbar = ({ points }) => {
                 }
                 .greeting {
                     font-size: 0.75rem;
-                    color: var(--text);
+                    color: var(--text-muted);
                     font-weight: 500;
                 }
                 .nav-actions {
@@ -100,29 +167,77 @@ const Navbar = ({ points }) => {
                     align-items: center;
                     gap: 1.5rem;
                 }
-                .level-info {
+                
+                /* New Gamification Styles */
+                .streak-badge {
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                    color: var(--text);
+                    background: var(--surface);
+                    padding: 4px 8px;
+                    border-radius: 12px;
+                    border: 1px solid var(--border);
+                }
+                .flame-active {
+                    color: #f97316; /* Orange */
+                    filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.4));
+                }
+                .flame-inactive {
+                    color: var(--text-muted);
+                }
+                
+                .daily-goal {
+                    position: relative;
+                    width: 32px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .ring-container {
+                    position: relative;
+                    width: 100%;
+                    height: 100%;
+                }
+                .ring-icon {
+                    position: absolute;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--text-muted);
+                }
+
+                /* Leveling System */
+                .level-container {
                     display: flex;
                     flex-direction: column;
                     align-items: flex-end;
+                    justify-content: center;
                 }
                 .level-label {
                     font-size: 0.75rem;
-                    color: var(--text);
-                    font-weight: 500;
+                    font-weight: 700;
+                    color: var(--primary);
+                    line-height: 1;
+                    margin-bottom: 4px;
                 }
-                .progress-bar {
-                    width: 100px;
-                    height: 4px;
-                    background-color: var(--secondary);
-                    border-radius: 999px;
-                    margin-top: 6px;
+                .xp-bar {
+                    width: 80px;
+                    height: 6px;
+                    background: var(--surface-hover);
+                    border: 1px solid var(--border);
+                    border-radius: 99px;
                     overflow: hidden;
                 }
-                .progress-fill {
+                .xp-fill {
                     height: 100%;
-                    background: var(--text);
-                    border-radius: 999px;
-                    transition: width 0.5s ease-out;
+                    background: linear-gradient(90deg, var(--secondary), var(--primary));
+                    border-radius: 99px;
+                    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
                 }
                 .points-badge {
                     background-color: var(--secondary);
@@ -168,7 +283,9 @@ const Navbar = ({ points }) => {
                 @media (max-width: 480px) {
                     .nav-brand h1 { font-size: 0.9rem; }
                     .points-badge { display: none; } /* Hide points on very small screens to save space */
+                    .streak-badge { font-size: 0.8rem; padding: 2px 6px; }
                     .nav-actions { gap: 0.5rem; }
+                    /* Maybe hide daily ring on super small if needed, but it's small enough */
                 }
             `}</style>
         </nav>

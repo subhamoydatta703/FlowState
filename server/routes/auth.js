@@ -33,8 +33,24 @@ router.post('/sync', async (req, res) => {
             // Found by ID, update info if changed
             user.email = email;
             user.username = username;
-            await user.save();
         }
+
+        // Daily Reset Check for returning/new users
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        const lastLogStr = user.lastLogDate ? user.lastLogDate.toISOString().split('T')[0] : null;
+
+        if (lastLogStr !== todayStr) {
+            user.dailyXP = 0;
+        }
+
+        // FORCE UPDATE GOAL (Migration to 300)
+        // If it's the old default (500) or missing, set to 300
+        if (!user.dailyGoal || user.dailyGoal === 500) {
+            user.dailyGoal = 300;
+        }
+
+        await user.save();
 
         res.json(user);
     } catch (err) {

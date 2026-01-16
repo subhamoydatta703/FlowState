@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Dashboard from './pages/Dashboard';
 import LandingPage from './pages/LandingPage';
 import axios from 'axios';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const { user, isLoaded } = useUser();
@@ -27,6 +28,13 @@ function App() {
 
   return (
     <Router>
+      <Toaster position="top-right" toastOptions={{
+        style: {
+          background: 'var(--surface)',
+          color: 'var(--text)',
+          border: '1px solid var(--border)',
+        },
+      }} />
       <Routes>
         <Route path="/" element={
           <>

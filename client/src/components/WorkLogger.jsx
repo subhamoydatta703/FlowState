@@ -3,6 +3,7 @@ import { Send, Loader2, Trash2, CheckCircle } from 'lucide-react';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 
 const WorkLogger = ({ onSuccess }) => {
     const { user } = useUser();
@@ -23,6 +24,7 @@ const WorkLogger = ({ onSuccess }) => {
             setPendingTasks(res.data);
         } catch (e) {
             console.error(e);
+            toast.error("Failed to load tasks");
         }
     };
 
@@ -41,8 +43,10 @@ const WorkLogger = ({ onSuccess }) => {
             setDuration("");
             setTags("");
             fetchPending();
+            toast.success("Work logged!");
         } catch (err) {
             console.error(err);
+            toast.error("Failed to log work");
         } finally {
             setLoading(false);
         }
@@ -53,8 +57,10 @@ const WorkLogger = ({ onSuccess }) => {
             await axios.put(`${import.meta.env.VITE_API_URL}/logs/${taskId}/complete`);
             fetchPending();
             onSuccess();
+            toast.success("Task completed!");
         } catch (err) {
             console.error(err);
+            toast.error("Failed to complete task");
         }
     };
 
@@ -62,8 +68,10 @@ const WorkLogger = ({ onSuccess }) => {
         try {
             await axios.delete(`${import.meta.env.VITE_API_URL}/logs/${taskId}`);
             fetchPending();
+            toast.success("Task deleted");
         } catch (err) {
             console.error(err);
+            toast.error("Failed to delete task");
         }
     };
 
