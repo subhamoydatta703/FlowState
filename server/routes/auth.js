@@ -54,8 +54,23 @@ router.post('/sync', async (req, res) => {
 
         res.json(user);
     } catch (err) {
-        console.error("Sync Error Details:", err); // Log the full error object
-        console.error("Request Body:", req.body); // Log what we tried to save
+        // Handle Race Condition (Duplicate Key Error E11000)
+        if (err.code === 11000) {
+            console.log("Race condition detected (Duplicate Key), retrieving existing user...");
+            try {
+                // Try to find the user that was just created by the other request
+                const { clerkId, email } = req.body;
+                const existingUser = await User.findOne({ $or: [{ clerkId }, { email }] });
+                if (existingUser) {
+                    return res.json(existingUser);
+                }
+            } catch (retryErr) {
+                console.error("Retry failed:", retryErr);
+            }
+        }
+
+        console.error("Sync Error Details:", err);
+        console.error("Request Body:", req.body);
         res.status(500).send('Server Error: ' + err.message);
     }
 });
