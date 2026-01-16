@@ -1,7 +1,7 @@
 import React from 'react';
 import { SignInButton } from "@clerk/clerk-react";
 import { motion } from 'framer-motion';
-import { Target, Zap, BarChart2, ArrowRight, Brain } from 'lucide-react';
+import { Calendar, Zap, BarChart2, ArrowRight, Brain } from 'lucide-react';
 
 const Logo = ({ className }) => (
   <svg
@@ -104,9 +104,9 @@ const LandingPage = () => {
         <section className="features-grid">
           <FeatureCard
             delay={0.6}
-            icon={Target}
-            title="Deep Focus"
-            description="Eliminate distractions with our focused session timers."
+            icon={Calendar}
+            title="Integrated Planner"
+            description="Stay organized with our fully integrated scheduling system."
           />
           <FeatureCard
             delay={0.7}
@@ -117,14 +117,14 @@ const LandingPage = () => {
           <FeatureCard
             delay={0.8}
             icon={BarChart2}
-            title="Data Insights"
-            description="Analyze detailed statistics to find your peak hours."
+            title="Productivity Trend"
+            description="Visualize your productivity with detailed analytics and trend lines."
           />
           <FeatureCard
             delay={0.9}
             icon={Brain}
             title="AI Coach"
-            description="Get intelligent suggestions to optimize your workflow."
+            description="Get intelligent suggestions to optimize your workflow on a weekly basis."
           />
         </section>
       </main>
@@ -144,8 +144,8 @@ const LandingPage = () => {
                     position: absolute;
                     inset: 0;
                     background-image: 
-                        linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+                        linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+                        linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
                     background-size: 40px 40px;
                     mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
                     z-index: 0;
@@ -213,7 +213,7 @@ const LandingPage = () => {
                     fill: transparent; 
                     stroke: var(--text);
                     stroke-width: 1.5px;
-                    filter: drop-shadow(0 0 20px rgba(255,255,255,0.1));
+                    filter: var(--logo-shadow);
                 }
 
                 .hero-title {
@@ -226,7 +226,7 @@ const LandingPage = () => {
                 }
                 
                 .highlight {
-                    background: linear-gradient(to right, #fff, #999);
+                    background: var(--text-gradient);
                     -webkit-background-clip: text;
                     color: transparent;
                 }
@@ -257,7 +257,7 @@ const LandingPage = () => {
                 .btn-lg:hover {
                     background: transparent;
                     color: var(--text);
-                    box-shadow: 0 0 15px rgba(255,255,255,0.1);
+                    box-shadow: 0 0 15px rgba(100,100,100,0.1);
                 }
                 
                 .btn-login {
@@ -287,7 +287,7 @@ const LandingPage = () => {
                     padding: 2rem;
                     border-radius: var(--radius);
                     border: 1px solid var(--border);
-                    background: rgba(255,255,255,0.01);
+                    background: var(--card-bg-transparent);
                     display: flex;
                     flex-direction: column;
                     align-items: flex-start;
@@ -298,7 +298,7 @@ const LandingPage = () => {
                 
                 .feature-card:hover {
                     border-color: var(--text-muted);
-                    background: rgba(255,255,255,0.03);
+                    background: var(--card-bg-hover-transparent);
                     transform: translateY(-2px);
                 }
 
