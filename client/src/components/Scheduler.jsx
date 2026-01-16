@@ -167,7 +167,7 @@ const Scheduler = () => {
                     margin-bottom: 2rem;
                 }
                 .scheduler-input, .scheduler-date {
-                    background-color: transparent;
+                    background-color: var(--input-bg);
                     border: 1px solid var(--border);
                     border-radius: var(--radius);
                     padding: 0.6rem 0.8rem;

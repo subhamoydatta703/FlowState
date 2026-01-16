@@ -42,38 +42,39 @@
   /* Inter is the standard for this look */
 
   --glass-bg: rgba(9, 9, 11, 0.8);
+  --input-bg: rgba(255, 255, 255, 0.05);
 }
 
 [data-theme='light'] {
-  --background: #fafafa;
-  /* Zinc 50 - Cleaner, Brighter */
+  --background: #f4f4f5;
+  /* Zinc 100 - Distinct off-white */
   --surface: #ffffff;
-  /* White - Classic card bg */
-  --surface-hover: #f4f4f5;
-  /* Zinc 100 */
+  /* Pure White */
+  --surface-hover: #fafafa;
+  /* Zinc 50 */
 
   --primary: #18181b;
-  /* Zinc 900 - Soft Black */
   --primary-foreground: #fafafa;
   --primary-hover: #27272a;
-  /* Zinc 800 */
 
-  --secondary: #f4f4f5;
-  /* Zinc 100 */
+  --secondary: #e4e4e7;
+  /* Zinc 200 - Darker secondary for contrast */
   --secondary-foreground: #18181b;
 
-  --text: #18181b;
-  /* Zinc 900 - Soft Black for better reading */
+  --text: #09090b;
+  /* Zinc 950 - Sharper black */
   --text-muted: #71717a;
-  /* Zinc 500 */
 
   --border: #e4e4e7;
-  /* Zinc 200 - Subtle definition */
+  /* Keep border but shadows will help more */
   --border-hover: #d4d4d8;
-  /* Zinc 300 */
 
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  /* Stronger shadows */
+
+  --input-bg: #f4f4f5;
+  /* Light grey for inputs */
 }
 
 * {

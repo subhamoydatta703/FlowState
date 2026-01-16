@@ -71,7 +71,8 @@ const AICoach = () => {
 
             <style>{`
                 .coach-card {
-                    background: linear-gradient(135deg, var(--surface), rgba(16, 185, 129, 0.05));
+                    /* Standard card background for consistency */
+                    /* background: linear-gradient(135deg, var(--surface), rgba(16, 185, 129, 0.05)); */
                     border: 1px solid var(--border);
                     border-radius: var(--radius);
                     padding: 1.5rem;

@@ -164,7 +164,7 @@ const WorkLogger = ({ onSuccess }) => {
                     min-height: 100px;
                     width: 100%;
                     resize: none;
-                    background-color: transparent;
+                    background-color: var(--input-bg);
                     border: 1px solid var(--border);
                     border-radius: var(--radius);
                     padding: 1rem;
@@ -189,7 +189,7 @@ const WorkLogger = ({ onSuccess }) => {
                 }
                 .logger-input-mini {
                     width: 150px;
-                    background-color: transparent;
+                    background-color: var(--input-bg);
                     border: 1px solid var(--border);
                     border-radius: var(--radius);
                     padding: 0.75rem;
@@ -198,7 +198,7 @@ const WorkLogger = ({ onSuccess }) => {
                 }
                 .logger-input-tags {
                     flex: 1;
-                    background-color: transparent;
+                    background-color: var(--input-bg);
                     border: 1px solid var(--border);
                     border-radius: var(--radius);
                     padding: 0.75rem;

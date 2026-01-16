@@ -78,8 +78,8 @@ const Navbar = ({ points, streak, dailyXP, dailyGoal }) => {
                                 style={{
                                     transition: 'all 0.5s ease',
                                     filter: `drop-shadow(0 0 ${Math.max(2, dailyProgress / 8)}px ${dailyProgress >= 100 ? "#ef4444" :
-                                            dailyProgress >= 33 ? "#f97316" :
-                                                "rgba(253, 186, 116, 0.4)"
+                                        dailyProgress >= 33 ? "#f97316" :
+                                            "rgba(253, 186, 116, 0.4)"
                                         })`
                                 }}
                             />
@@ -133,7 +133,8 @@ const Navbar = ({ points, streak, dailyXP, dailyGoal }) => {
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    background: rgba(255, 255, 255, 0.05); /* Glass fallback */
+                    justify-content: space-between;
+                    /* background: managed by .glass-panel class from App.css */
                     backdrop-filter: blur(12px);
                     transition: padding 0.3s ease;
                     border-bottom: 1px solid var(--border);
